@@ -206,4 +206,18 @@ curl -X DELETE http://localhost:3000/api/tasks/1
 - Add pagination to `GET /api/tasks` for large datasets.
 
 ---
+## Author
+
+**Easha **
+
+* GitHub: https://github.com/easha1708
+* DecodeLabs Full Stack Development Track
+
+## License
+
+This project was created for educational and internship evaluation purposes under the DecodeLabs Industrial Training Program.
+
+---
+
 *Built with Express.js — Project 2, Full Stack Development Track, DecodeLabs (2026).*
+
