@@ -35,27 +35,16 @@ The main goal of this project is to demonstrate how a backend system works as a 
 
 ```
 synapse-api/
-│
-├── server.js
-│   └── Main server file and API entry point
-│
+├── server.js              # Entry point — the "Brain Stem" / API Gateway
 ├── package.json
-│   └── Project dependencies and scripts
-│
 ├── routes/
-│   └── tasks.js
-│       └── Contains all task-related API routes
-│
+│   └── tasks.js            # All /api/tasks endpoints (the resource)
 ├── middleware/
-│   ├── validate.js
-│   │   └── Handles request validation
-│   │
-│   └── errorHandler.js
-│       └── Manages API errors
-│
+│   ├── validate.js         # The "Gatekeeper" — input validation
+│   └── errorHandler.js      # 404 + global 500 error handler
 └── data/
-    └── store.js
-        └── Temporary in-memory data storage
+    └── store.js            # In-memory "database" (swap for real DB later)
+
 ```
 
 ---
