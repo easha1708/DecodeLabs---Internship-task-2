@@ -1,223 +1,282 @@
 # Synapse API
 
-**DecodeLabs | Industrial Training Kit | Project 2: Backend API Development**
-**Theme: "The Nervous System" — Engineering the Backend API & Architectural Integrity**
+**DecodeLabs | Industrial Training Program | Project 2: Backend API Development**
+**Theme: "The Nervous System" — Building a Reliable Backend Architecture**
 
-> "If it isn't documented, it doesn't exist."
+> "A good project is not only built with code, it is built with proper documentation."
 
-## What This Project Demonstrates
+---
 
-This is a small, fully working REST API for managing a list of **tasks**.
-It was built specifically to satisfy the Project 2 requirements from the
-training kit by mapping each "anatomical" concept from the slides to real
-code:
+## Project Overview
 
-| Slide Concept | Where it lives in this project |
-|---|---|
-| **IPO Model** (Input → Process → Output) | Every route handler in `routes/tasks.js` follows this pattern |
-| **The Synaptic Gap** (Client ↔ Network ↔ Server) | `server.js` is the API Gateway / Brain Stem receiving all requests |
-| **HTTP Methods** (GET / POST / PUT / DELETE) | `routes/tasks.js` |
-| **RESTful Naming** (resources are nouns, methods are verbs) | `/api/tasks`, `/api/tasks/:id` — never `/getTasks` |
-| **The Neurotransmitter (JSON)** | `express.json()` + all responses are JSON |
-| **The Gatekeeper Rule** ("Never trust the client") | `middleware/validate.js` |
-| **Server's Tone** (semantic status codes) | 200, 201, 204, 400, 404, 500 used correctly throughout |
-| **Circuit Breaker / Resilience** | `middleware/errorHandler.js` |
-| **Documentation & DX** | This README |
+**Synapse API** is a RESTful backend API developed for managing tasks efficiently.
+This project focuses on backend fundamentals including API design, HTTP methods, request handling, validation, error management, and proper response formatting.
 
-## Project Structure
+The main goal of this project is to demonstrate how a backend system works as a communication layer between the client and server by following clean REST API principles.
+
+---
+
+## Key Concepts Implemented
+
+| Concept                                  | Implementation                                                                      |
+| ---------------------------------------- | ----------------------------------------------------------------------------------- |
+| **IPO Model (Input → Process → Output)** | Each API route receives input, processes the request, and returns a proper response |
+| **Client-Server Communication**          | `server.js` works as the main API entry point handling incoming requests            |
+| **HTTP Methods**                         | GET, POST, PUT, and DELETE methods are implemented in task routes                   |
+| **RESTful API Design**                   | Resources are accessed using proper endpoints like `/api/tasks`                     |
+| **JSON Data Handling**                   | Express JSON middleware is used for request and response data                       |
+| **Input Validation**                     | Middleware validates user input before processing requests                          |
+| **HTTP Status Codes**                    | Correct status codes like 200, 201, 204, 400, 404, and 500 are used                 |
+| **Error Handling**                       | Centralized error handling improves API reliability                                 |
+
+---
+
+# Project Structure
 
 ```
 synapse-api/
-├── server.js              # Entry point — the "Brain Stem" / API Gateway
+│
+├── server.js
+│   └── Main server file and API entry point
+│
 ├── package.json
+│   └── Project dependencies and scripts
+│
 ├── routes/
-│   └── tasks.js            # All /api/tasks endpoints (the resource)
+│   └── tasks.js
+│       └── Contains all task-related API routes
+│
 ├── middleware/
-│   ├── validate.js         # The "Gatekeeper" — input validation
-│   └── errorHandler.js      # 404 + global 500 error handler
+│   ├── validate.js
+│   │   └── Handles request validation
+│   │
+│   └── errorHandler.js
+│       └── Manages API errors
+│
 └── data/
-    └── store.js            # In-memory "database" (swap for real DB later)
+    └── store.js
+        └── Temporary in-memory data storage
 ```
 
-## Getting Started
+---
+
+# Installation & Setup
+
+Follow these steps to run the project locally:
+
+### 1. Install Dependencies
 
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Start the server
-npm start
-
-# Server runs at http://localhost:3000
 ```
 
-## API Reference
+### 2. Start the Server
 
-### Health Check
+```bash
+npm start
+```
+
+The API will start running at:
+
+```
+http://localhost:3000
+```
+
+---
+
+# API Endpoints
+
+## Health Check
+
+### Request
 
 ```
 GET /api/health
 ```
-Returns `200 OK` with a status message and timestamp. Use this to confirm
-the "nervous system" is alive.
 
-### List Tasks
+Checks whether the server is active and returns server status information.
+
+---
+
+# Task APIs
+
+## Get All Tasks
 
 ```
 GET /api/tasks
+```
+
+Optional filters:
+
+```
 GET /api/tasks?completed=true
+
 GET /api/tasks?priority=high
 ```
 
-Returns `200 OK` with all tasks, optionally filtered by `completed` or
-`priority`.
+Returns the available tasks in JSON format.
 
-**Example response:**
+Example Response:
+
 ```json
 {
-  "status": "success",
-  "count": 2,
-  "data": [
-    {
-      "id": 1,
-      "title": "Design API endpoints",
-      "description": "Plan out GET and POST routes for the task resource",
-      "priority": "high",
-      "completed": true,
-      "createdAt": "2026-06-10T09:00:00.000Z"
-    }
-  ]
+ "status":"success",
+ "count":2,
+ "data":[
+  {
+   "id":1,
+   "title":"Design API endpoints",
+   "priority":"high",
+   "completed":true
+  }
+ ]
 }
 ```
 
-### Get a Single Task
+---
+
+## Get Single Task
 
 ```
 GET /api/tasks/:id
 ```
 
-| Status | Meaning |
-|---|---|
-| `200 OK` | Task found and returned |
-| `400 Bad Request` | `:id` is not a positive integer |
-| `404 Not Found` | No task exists with that id |
+Response Codes:
 
-### Create a Task
+| Code | Meaning                 |
+| ---- | ----------------------- |
+| 200  | Task found successfully |
+| 400  | Invalid task ID         |
+| 404  | Task not found          |
+
+---
+
+## Create New Task
 
 ```
 POST /api/tasks
-Content-Type: application/json
 ```
 
-**Body:**
+Request Body:
+
 ```json
 {
-  "title": "Write integration tests",
-  "description": "Cover all CRUD endpoints",
-  "priority": "medium",
-  "completed": false
+"title":"Build API",
+"description":"Complete backend development",
+"priority":"medium",
+"completed":false
 }
 ```
 
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| `title` | string | ✅ | min length 3 |
-| `description` | string | ❌ | defaults to `""` |
-| `priority` | string | ❌ | one of `low`, `medium`, `high`; defaults to `medium` |
-| `completed` | boolean | ❌ | defaults to `false` |
+Supported Fields:
 
-| Status | Meaning |
-|---|---|
-| `201 Created` | Task created. Response includes a `Location` header pointing to the new resource |
-| `400 Bad Request` | Validation failed (e.g. missing/short title, invalid priority) |
+| Field       | Type    | Required |
+| ----------- | ------- | -------- |
+| title       | String  | Yes      |
+| description | String  | No       |
+| priority    | String  | No       |
+| completed   | Boolean | No       |
 
-### Update a Task
+Response:
+
+| Code | Meaning                   |
+| ---- | ------------------------- |
+| 201  | Task created successfully |
+| 400  | Invalid input             |
+
+---
+
+## Update Task
 
 ```
 PUT /api/tasks/:id
-Content-Type: application/json
 ```
 
-Send only the fields you want to change — all fields are optional, but
-the body cannot be empty.
+Updates existing task details.
 
-| Status | Meaning |
-|---|---|
-| `200 OK` | Task updated successfully |
-| `400 Bad Request` | Invalid `:id`, empty body, or invalid field values |
-| `404 Not Found` | No task exists with that id |
+Response:
 
-### Delete a Task
+| Code | Meaning              |
+| ---- | -------------------- |
+| 200  | Updated successfully |
+| 400  | Invalid request      |
+| 404  | Task not found       |
+
+---
+
+## Delete Task
 
 ```
 DELETE /api/tasks/:id
 ```
 
-| Status | Meaning |
-|---|---|
-| `204 No Content` | Task deleted successfully (no response body) |
-| `400 Bad Request` | `:id` is not a positive integer |
-| `404 Not Found` | No task exists with that id |
+Deletes a task from the system.
 
-## Status Code Vocabulary Used
+Response:
 
-| Code | Name | When it's returned |
-|---|---|---|
-| `200` | OK | Successful GET / PUT |
-| `201` | Created | Successful POST |
-| `204` | No Content | Successful DELETE |
-| `400` | Bad Request | Failed validation (client's fault) |
-| `404` | Not Found | Unknown route or missing resource |
-| `500` | Internal Server Error | Unexpected server fault (circuit breaker) |
+| Code | Meaning              |
+| ---- | -------------------- |
+| 204  | Deleted successfully |
+| 404  | Task not found       |
 
-## Example: Full curl Walkthrough
+---
+
+# Status Codes Used
+
+| Status           | Usage                |
+| ---------------- | -------------------- |
+| 200 OK           | Successful request   |
+| 201 Created      | New resource created |
+| 204 No Content   | Successful deletion  |
+| 400 Bad Request  | Invalid user input   |
+| 404 Not Found    | Resource unavailable |
+| 500 Server Error | Unexpected error     |
+
+---
+
+# API Testing Example
 
 ```bash
-# Health check
-curl http://localhost:3000/api/health
+GET /api/health
 
-# Create a task
-curl -X POST http://localhost:3000/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Ship the API", "priority": "high"}'
+GET /api/tasks
 
-# List all tasks
-curl http://localhost:3000/api/tasks
+POST /api/tasks
 
-# Get one task
-curl http://localhost:3000/api/tasks/1
+PUT /api/tasks/1
 
-# Update a task
-curl -X PUT http://localhost:3000/api/tasks/1 \
-  -H "Content-Type: application/json" \
-  -d '{"completed": true}'
-
-# Delete a task
-curl -X DELETE http://localhost:3000/api/tasks/1
+DELETE /api/tasks/1
 ```
 
-## Ideas for Extending This Project (per the Conclusion slide)
+---
 
-- Swap `data/store.js` for a real database (MongoDB/PostgreSQL) without
-  changing any route signatures.
-- Add authentication (AuthN) and authorization (AuthZ) middleware.
-- Add a `429 Too Many Requests` rate limiter.
-- Write automated tests for every status code path (200/201/204/400/404/500).
-- Add pagination to `GET /api/tasks` for large datasets.
+# Future Enhancements
+
+Possible improvements:
+
+* Connect with MongoDB/PostgreSQL database
+* Add authentication and authorization
+* Add API rate limiting
+* Create automated API tests
+* Add pagination support
+* Deploy API on cloud services
 
 ---
+
+# Technologies Used
+
+* Node.js
+* Express.js
+* REST API
+* JSON
+* JavaScript
+
+---
+
 ## Author
 
-**Easha **
-
-* GitHub: https://github.com/easha1708
-* DecodeLabs Full Stack Development Track
-
-## License
-
-This project was created for educational and internship evaluation purposes under the DecodeLabs Industrial Training Program.
+**Easha**
 
 ---
 
-*Built with Express.js — Project 2, Full Stack Development Track, DecodeLabs (2026).*
-
+Built as part of **DecodeLabs Full Stack Development Track — Project 2 (2026)**
